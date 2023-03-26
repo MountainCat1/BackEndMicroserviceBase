@@ -1,4 +1,6 @@
-﻿namespace BaseApi.Infrastructure.Generics;
+﻿using System;
+
+namespace BaseApi.Infrastructure.Generics;
 
 public class ItemNotFoundException : Exception
 {
