@@ -3,14 +3,14 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-# BaseApi-specific files
+# Account-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-# BaseApi-specific files (MonoDevelop/Xamarin Studio)
+# Account-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
 # Mono auto generated files
@@ -456,7 +456,7 @@ $RECYCLE.BIN/
 
 # Common IntelliJ Platform excludes
 
-# BaseApi specific
+# Account specific
 **/.idea/**/workspace.xml
 **/.idea/**/tasks.xml
 **/.idea/shelf/*
