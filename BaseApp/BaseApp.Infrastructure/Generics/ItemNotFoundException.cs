@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BaseApp.Infrastructure.Generics;
+﻿namespace BaseApp.Infrastructure.Generics;
 
 public class ItemNotFoundException : Exception
 {

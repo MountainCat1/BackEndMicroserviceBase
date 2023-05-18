@@ -1,41 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using BaseApp.Domain.Abstractions;
+using BaseApp.Infrastructure.Errors.Database;
+using BaseApp.Infrastructure.Extensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace BaseApp.Infrastructure.Generics;
 
-public class Repository<TEntity, TDbContext> : IRepository<TEntity> 
-    where TEntity : class, IEntity
+public class Repository<TEntity, TDbContext> : IRepository<TEntity>
+    where TEntity : Entity
     where TDbContext : DbContext
 {
     private readonly DbSet<TEntity> _dbSet;
     private readonly Func<Task> _saveChangesAsyncDelegate;
+    private IMediator _mediator;
+    private TDbContext _dbContext;
+    private ILogger<Repository<TEntity, TDbContext>> _logger;
 
 
-    public Repository(TDbContext dbContext)
+    public Repository(TDbContext dbContext, IMediator mediator, ILogger<Repository<TEntity, TDbContext>> logger)
     {
+        _dbContext = dbContext;
+        _mediator = mediator;
+        _logger = logger;
         _dbSet = dbContext.Set<TEntity>();
 
-        _saveChangesAsyncDelegate = async () =>
-        {
-            await dbContext.SaveChangesAsync();
-        };
+        _saveChangesAsyncDelegate = async () => { await dbContext.SaveChangesAsync(); };
     }
 
     public virtual async Task<TEntity?> GetOneAsync(params object[] guids)
     {
         if (guids.Length == 0)
             throw new ArgumentException("No key provided");
-        
+
         var entity = await _dbSet.FindAsync(guids);
-        
+
         return entity;
     }
-    
+
     public virtual async Task<IEnumerable<TEntity>> GetAsync(
         Expression<Func<TEntity, bool>>? filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
@@ -62,7 +65,9 @@ public class Repository<TEntity, TDbContext> : IRepository<TEntity>
             return await query.ToListAsync();
         }
     }
-    public async Task<TEntity?> GetOneAsync(Expression<Func<TEntity, bool>>? filter = null, params string[] includeProperties)
+
+    public async Task<TEntity?> GetOneAsync(Expression<Func<TEntity, bool>>? filter = null,
+        params string[] includeProperties)
     {
         IQueryable<TEntity> query = _dbSet;
 
@@ -78,6 +83,17 @@ public class Repository<TEntity, TDbContext> : IRepository<TEntity>
 
         return await query.FirstOrDefaultAsync();
     }
+    
+    public async Task<TEntity> GetOneRequiredAsync(Expression<Func<TEntity, bool>>? filter = null,
+        params string[] includeProperties)
+    {
+        var entity = await GetOneAsync(filter, includeProperties);
+
+        if (entity == null)
+            throw new ItemNotFoundException();
+
+        return entity;
+    }
 
     public virtual async Task<TEntity> GetOneRequiredAsync(params object[] guids)
     {
@@ -92,7 +108,7 @@ public class Repository<TEntity, TDbContext> : IRepository<TEntity>
     public virtual async Task<ICollection<TEntity>> GetAllAsync()
     {
         var entities = await _dbSet.ToListAsync();
-        
+
         return entities;
     }
 
@@ -103,10 +119,10 @@ public class Repository<TEntity, TDbContext> : IRepository<TEntity>
         _dbSet.Remove(entity);
     }
 
-    public virtual Task<TEntity> CreateAsync(TEntity entity)
+    public virtual Task<TEntity> AddAsync(TEntity entity)
     {
         _dbSet.Add(entity);
-        
+
         return Task.FromResult(entity);
     }
 
@@ -120,8 +136,37 @@ public class Repository<TEntity, TDbContext> : IRepository<TEntity>
         return entity;
     }
 
-    public virtual async Task SaveChangesAsync()
+    public virtual async Task<Exception?> SaveChangesAsync()
     {
-        await _saveChangesAsyncDelegate();
+        try
+        {
+            await _saveChangesAsyncDelegate();
+        }
+        catch (DbUpdateException ex) when (ex.IsDuplicateEntryViolation())
+        {
+            ClearDomainEvents();
+            return new DuplicateEntryException("A duplicate entry was detected.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            ClearDomainEvents();
+            return ex;
+        }
+
+        await _mediator.DispatchDomainEventsAsync(_dbContext);
+        
+        return null;
+    }
+
+    private void ClearDomainEvents()
+    {
+        var domainEntities = _dbContext.ChangeTracker
+            .Entries<Entity>()
+            .Where(entry => entry.Entity.DomainEvents != null && entry.Entity.DomainEvents.Any())
+            .ToArray();
+
+        foreach (var entry in domainEntities)
+            entry.Entity.ClearDomainEvents();
     }
 }
