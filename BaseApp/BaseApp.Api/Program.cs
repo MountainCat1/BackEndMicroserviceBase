@@ -19,12 +19,12 @@ services.AddSwaggerGen();
 
 if (builder.Environment.IsDevelopment())
     services.AddDbContext<BaseAppDbContext>(options 
-        => options.UseSqlite(configuration.GetConnectionString("BaseAppDatabase")));
+        => options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase")));
 else
     services.AddDbContext<BaseAppDbContext>(options 
         => options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase")));
 
-services.AddMediatR(typeof(CqrsAssemblyMarker));
+services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(typeof(ApplicationAssemblyMarker).Assembly));
 
 var app = builder.Build();
 

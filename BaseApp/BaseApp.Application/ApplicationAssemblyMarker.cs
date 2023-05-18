@@ -1,3 +1,3 @@
 ﻿namespace BaseApp.Application;
 
-public class CqrsAssemblyMarker { /* Intentionally Empty */ }
+public class ApplicationAssemblyMarker { /* Intentionally Empty */ }
