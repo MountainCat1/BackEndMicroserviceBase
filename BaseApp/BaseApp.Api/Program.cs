@@ -1,26 +1,64 @@
+using BaseApp.Api;
+using BaseApp.Api.MediaRBehaviors;
 using BaseApp.Application;
 using BaseApp.Infrastructure.Contexts;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ========= CONFIGURATION  =========
 var configuration = builder.Configuration;
 
+
+// ========= SERVICES  =========
 var services = builder.Services;
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+    loggingBuilder.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+});
 
-if (builder.Environment.IsDevelopment())
-    services.AddDbContext<BaseAppDbContext>(options 
-        => options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase")));
-else
-    services.AddDbContext<BaseAppDbContext>(options 
-        => options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase")));
+services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigins", builder =>
+    {
+        builder.WithOrigins(new[]
+            {
+                "http://localhost:4200", // local frontend
+                "https://localhost:5000", // local swagger 
+                "http://localhost:4000", // local swagger
+            })
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
+services.AddDbContext<BaseAppDbContext>(options =>
+{
+    options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase"),  
+        b => b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName));
+    
+        
+    options.UseLoggerFactory(LoggerFactory.Create(builder => builder
+        .AddFilter((_, _) => false)
+        .AddConsole()));
+});
+
+services.AddFluentValidationAutoValidation();
+services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyMarker>();
+services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(typeof(ApplicationAssemblyMarker).Assembly));
 
+// ========= RUN  =========
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,6 +67,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowOrigins");
 
 app.UseHttpsRedirection();
 
