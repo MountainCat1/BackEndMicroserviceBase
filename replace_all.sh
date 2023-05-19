@@ -32,4 +32,11 @@ find "$directory" -type f | while read file; do
   echo "$file"
 done
 
+echo "Removing .sh files..."
+echo "${directory}"
+rm "${directory}"/createDomain.sh
+rm "${directory}"/downloadBase.sh
+rm "${directory}"/replace_all.sh
+
+
 echo "Done."
