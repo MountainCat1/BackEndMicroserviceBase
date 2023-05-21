@@ -158,6 +158,27 @@ public class Repository<TEntity, TDbContext> : IRepository<TEntity>
         
         return null;
     }
+    
+    public virtual async Task SaveChangesAndThrowAsync()
+    {
+        try
+        {
+            await _saveChangesAsyncDelegate();
+        }
+        catch (DbUpdateException ex) when (ex.IsDuplicateEntryViolation())
+        {
+            ClearDomainEvents();
+            throw new DuplicateEntryException("A duplicate entry was detected.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            ClearDomainEvents();
+            throw;
+        }
+
+        await _mediator.DispatchDomainEventsAsync(_dbContext);
+    }
 
     private void ClearDomainEvents()
     {

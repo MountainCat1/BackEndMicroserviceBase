@@ -1,5 +1,6 @@
 using BaseApp.Api;
 using BaseApp.Api.MediaRBehaviors;
+using BaseApp.Api.Middlewares;
 using BaseApp.Application;
 using BaseApp.Infrastructure.Contexts;
 using FluentValidation;
@@ -45,13 +46,12 @@ services.AddDbContext<BaseAppDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase"),  
         b => b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName));
-    
-        
     options.UseLoggerFactory(LoggerFactory.Create(builder => builder
         .AddFilter((_, _) => false)
         .AddConsole()));
 });
 
+services.AddSingleton<ErrorHandlingMiddleware>();
 services.AddFluentValidationAutoValidation();
 services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyMarker>();
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
@@ -67,6 +67,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseCors("AllowOrigins");
 
