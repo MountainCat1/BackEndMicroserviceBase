@@ -1,4 +1,4 @@
-namespace Account.Service.Errors;
+namespace BaseApp.Application.Errors;
 
 public class UnauthorizedError : Exception
 {

@@ -1,4 +1,5 @@
 using BaseApp.Api;
+using BaseApp.Api.Extensions;
 using BaseApp.Api.MediaRBehaviors;
 using BaseApp.Api.Middlewares;
 using BaseApp.Application;
@@ -44,7 +45,7 @@ services.AddCors(options =>
 
 services.AddDbContext<BaseAppDbContext>(options =>
 {
-    options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase"),  
+    options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase"),
         b => b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName));
     options.UseLoggerFactory(LoggerFactory.Create(builder => builder
         .AddFilter((_, _) => false)
@@ -56,10 +57,13 @@ services.AddFluentValidationAutoValidation();
 services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyMarker>();
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
-services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(typeof(ApplicationAssemblyMarker).Assembly));
+services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(ApplicationAssemblyMarker).Assembly));
 
 // ========= RUN  =========
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+    await app.MigrateDatabaseAsync<BaseAppDbContext>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

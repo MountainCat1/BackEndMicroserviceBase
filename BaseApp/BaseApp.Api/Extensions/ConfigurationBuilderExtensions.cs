@@ -1,4 +1,4 @@
-﻿namespace Account.Application.Extensions;
+﻿namespace BaseApp.Api.Extensions;
 
 public static class ConfigurationBuilderExtensions
 {
