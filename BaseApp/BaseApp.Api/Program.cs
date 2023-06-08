@@ -3,6 +3,7 @@ using BaseApp.Api.Extensions;
 using BaseApp.Api.MediaRBehaviors;
 using BaseApp.Api.Middlewares;
 using BaseApp.Application;
+using BaseApp.Application.Configuration;
 using BaseApp.Infrastructure.Contexts;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -14,6 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 // ========= CONFIGURATION  =========
 var configuration = builder.Configuration;
 
+configuration.AddJsonFile("Secrets/jwt.json");
+
+var jwtConfig = configuration.GetConfiguration<JwtConfig>();
 
 // ========= SERVICES  =========
 var services = builder.Services;
@@ -43,6 +47,8 @@ services.AddCors(options =>
     });
 });
 
+services.AddAsymmetricAuthentication(jwtConfig);
+
 services.AddDbContext<BaseAppDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase"),
@@ -69,7 +75,14 @@ if (!app.Environment.IsDevelopment())
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+
+        // Enable JWT authentication in Swagger UI
+        c.OAuthClientId("swagger");
+        c.OAuthAppName("Swagger UI");
+    });
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
