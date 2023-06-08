@@ -24,7 +24,10 @@ var services = builder.Services;
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+services.AddSwaggerGen(o =>
+{
+    o.AddSwaggerAuthUi();
+});
 services.AddLogging(loggingBuilder =>
 {
     loggingBuilder.AddConsole();
