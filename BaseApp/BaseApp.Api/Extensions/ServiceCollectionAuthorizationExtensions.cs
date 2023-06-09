@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-
-namespace BaseApp.Api.Extensions;
+﻿namespace BaseApp.Api.Extensions;
 
 public static class ServiceCollectionAuthorizationExtensions
 {
