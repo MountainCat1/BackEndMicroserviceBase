@@ -15,11 +15,11 @@
       <Folder Include="Authorization\Handlers" />
       <Folder Include="Authorization\Requirements" />
       <Folder Include="Features" />
-      <Folder Include="Services" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="MediatR" Version="12.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
       <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.5" />
     </ItemGroup>
 

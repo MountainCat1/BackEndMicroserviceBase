@@ -4,6 +4,7 @@ using BaseApp.Api.MediaRBehaviors;
 using BaseApp.Api.Middlewares;
 using BaseApp.Application;
 using BaseApp.Application.Configuration;
+using BaseApp.Application.Services;
 using BaseApp.Infrastructure.Contexts;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -61,6 +62,8 @@ services.AddDbContext<BaseAppDbContext>(options =>
         .AddConsole()));
 });
 
+services.AddHttpContextAccessor();
+services.AddTransient<IUserAccessor, UserAccessor>();
 services.AddSingleton<ErrorHandlingMiddleware>();
 services.AddFluentValidationAutoValidation();
 services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyMarker>();
