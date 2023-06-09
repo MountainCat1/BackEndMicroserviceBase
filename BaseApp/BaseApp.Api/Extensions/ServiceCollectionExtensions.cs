@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddAsymmetricAuthentication(this IServiceCollection services, JwtConfig jwtConfig)
     {
-        services.AddSingleton<RsaSecurityKey>(provider =>
+        services.AddSingleton<RsaSecurityKey>(_ =>
         {
             // It's required to register the RSA key with depedency injection.
             // If you don't do this, the RSA instance will be prematurely disposed.
