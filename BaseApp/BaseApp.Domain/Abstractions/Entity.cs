@@ -15,7 +15,7 @@ public abstract class Entity : IEntity
     
     public void AddDomainEvent<T>(DomainEvent<T> notification) where T : Entity
     {
-        notification.Entity = this as T;
+        notification.Entity = this as T ?? throw new NullReferenceException();
         _domainEvents ??= new List<IDomainEvent>();
         _domainEvents.Add(notification);
     }
