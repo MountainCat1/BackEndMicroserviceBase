@@ -15,8 +15,8 @@ public interface IRepository<TEntity> : IRepository where TEntity : Entity
         params string[] includeProperties);
     public Task<TEntity?> GetOneAsync(params object[] keys);
     public Task<ICollection<TEntity>> GetAllAsync();
-    public Task DeleteAsync(params object[] keys);
+    Task<TEntity> DeleteAsync(TEntity entity);
     public Task<TEntity> AddAsync(TEntity entity);
     
-    Task SaveChangesAndThrowAsync();
+    Task SaveChangesAsync();
 }

@@ -5,6 +5,7 @@ using BaseApp.Api.Middlewares;
 using BaseApp.Application;
 using BaseApp.Application.Configuration;
 using BaseApp.Application.Services;
+using BaseApp.Infrastructure.Abstractions;
 using BaseApp.Infrastructure.Contexts;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -64,7 +65,8 @@ services.AddDbContext<BaseAppDbContext>(options =>
 
 services.AddHttpContextAccessor();
 services.AddTransient<IUserAccessor, UserAccessor>();
-services.AddSingleton<ErrorHandlingMiddleware>();
+services.AddScoped<IDatabaseErrorMapper, DatabaseErrorMapper>();
+services.AddScoped<ErrorHandlingMiddleware>();
 services.AddFluentValidationAutoValidation();
 services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyMarker>();
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
