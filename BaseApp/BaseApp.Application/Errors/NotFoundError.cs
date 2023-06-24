@@ -1,13 +1,12 @@
 namespace BaseApp.Application.Errors;
 
-public class NotFoundError : Exception
+public class NotFoundError : ApplicationError
 {
-    public NotFoundError()
-    {
-    }
+    public override int StatusCode => 404;
 
     public NotFoundError(string? message) : base(message)
     {
+        
     }
 
     public NotFoundError(string? message, Exception? innerException) : base(message, innerException)
