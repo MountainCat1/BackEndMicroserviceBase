@@ -69,9 +69,4 @@ public abstract class OperationAuthorizationHandler<TResource> : AuthorizationHa
     {
         return AuthorizationResult.Failed();
     }
-
-    // protected class AuthorizationResult
-    // {
-    //     public bool Success { get; set; } = false;
-    // }
 }

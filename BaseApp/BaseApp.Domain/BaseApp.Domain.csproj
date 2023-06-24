@@ -7,13 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Entities" />
       <Folder Include="Repositories" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation" Version="11.5.2" />
-      <PackageReference Include="MediatR" Version="12.0.1" />
+      <PackageReference Include="Catut.Domain" Version="1.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.8" />
     </ItemGroup>
 
 </Project>

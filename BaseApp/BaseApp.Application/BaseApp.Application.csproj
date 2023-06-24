@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BaseApp.Domain\BaseApp.Domain.csproj" />
       <ProjectReference Include="..\BaseApp.Infrastructure\BaseApp.Infrastructure.csproj" />
+      <ProjectReference Include="..\Catut.Infrastructure\Catut.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -18,9 +19,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="12.0.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5" />
-      <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.5" />
+      <PackageReference Include="Catut.Application" Version="1.0.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
+      <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.8" />
     </ItemGroup>
 
 </Project>

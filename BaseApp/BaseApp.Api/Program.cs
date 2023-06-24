@@ -1,12 +1,12 @@
 using BaseApp.Api;
 using BaseApp.Api.Extensions;
-using BaseApp.Api.MediaRBehaviors;
-using BaseApp.Api.Middlewares;
 using BaseApp.Application;
-using BaseApp.Application.Configuration;
 using BaseApp.Application.Services;
-using BaseApp.Infrastructure.Abstractions;
 using BaseApp.Infrastructure.Contexts;
+using Catut.Application.Configuration;
+using Catut.Application.MediaRBehaviors;
+using Catut.Application.Middlewares;
+using Catut.Infrastructure.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -39,9 +39,9 @@ services.AddLogging(loggingBuilder =>
 
 services.AddCors(options =>
 {
-    options.AddPolicy("AllowOrigins", builder =>
+    options.AddPolicy("AllowOrigins", policyBuilder =>
     {
-        builder.WithOrigins(new[]
+        policyBuilder.WithOrigins(new[]
             {
                 "http://localhost:4200", // local frontend
                 "https://localhost:5000", // local swagger 
@@ -57,8 +57,12 @@ services.AddAsymmetricAuthentication(jwtConfig);
 services.AddDbContext<BaseAppDbContext>(options =>
 {
     options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase"),
-        b => b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName));
-    options.UseLoggerFactory(LoggerFactory.Create(builder => builder
+        b =>
+        {
+            b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName);
+            b.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5.0), null);
+        });
+    options.UseLoggerFactory(LoggerFactory.Create(lb => lb
         .AddFilter((_, _) => false)
         .AddConsole()));
 });

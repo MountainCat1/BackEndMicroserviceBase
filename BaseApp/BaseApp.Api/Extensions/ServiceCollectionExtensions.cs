@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography;
-using BaseApp.Application.Configuration;
+using Catut.Application.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
