@@ -1,5 +1,8 @@
+using System.Text.Json;
+using Azure.Messaging.ServiceBus;
 using BaseApp.Api;
 using BaseApp.Api.Extensions;
+using BaseApp.Api.Extensions.ServiceCollection;
 using BaseApp.Application;
 using BaseApp.Application.Services;
 using BaseApp.Infrastructure.Contexts;
@@ -9,8 +12,11 @@ using Catut.Application.Middlewares;
 using Catut.Infrastructure.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using MassTransit;
+using MassTransit.Testing.Implementations;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,16 +26,13 @@ var configuration = builder.Configuration;
 configuration.AddJsonFile("Secrets/jwt.json");
 
 var jwtConfig = configuration.GetConfiguration<JwtConfig>();
+var apiConfig = configuration.GetConfiguration<ApiConfiguration>();
 
 // ========= SERVICES  =========
 var services = builder.Services;
 
 services.AddControllers();
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen(o =>
-{
-    o.AddSwaggerAuthUi();
-});
 services.AddLogging(loggingBuilder =>
 {
     loggingBuilder.AddConsole();
@@ -37,35 +40,14 @@ services.AddLogging(loggingBuilder =>
     loggingBuilder.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 });
 
-services.AddCors(options =>
-{
-    options.AddPolicy("AllowOrigins", policyBuilder =>
-    {
-        policyBuilder.WithOrigins(new[]
-            {
-                "http://localhost:4200", // local frontend
-                "https://localhost:5000", // local swagger 
-                "http://localhost:4000", // local swagger
-            })
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
+//  === INSTALLERS ===
+services.InstallSwagger();
+services.InstallMassTransit(configuration);
+services.InstallCors();
+services.InstallDbContext(configuration);
+//  ===            ===
 
 services.AddAsymmetricAuthentication(jwtConfig);
-
-services.AddDbContext<BaseAppDbContext>(options =>
-{
-    options.UseSqlServer(configuration.GetConnectionString("BaseAppDatabase"),
-        b =>
-        {
-            b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName);
-            b.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5.0), null);
-        });
-    options.UseLoggerFactory(LoggerFactory.Create(lb => lb
-        .AddFilter((_, _) => false)
-        .AddConsole()));
-});
 
 services.AddHttpContextAccessor();
 services.AddTransient<IUserAccessor, UserAccessor>();

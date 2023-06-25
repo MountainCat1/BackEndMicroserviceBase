@@ -11,7 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Catut.Domain" Version="1.0.1" />
+      <PackageReference Include="Catut.Domain" Version="1.0.2" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.8" />
     </ItemGroup>
 
