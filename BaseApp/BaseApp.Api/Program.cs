@@ -1,6 +1,3 @@
-using System.Text.Json;
-using Azure.Messaging.ServiceBus;
-using BaseApp.Api;
 using BaseApp.Api.Extensions;
 using BaseApp.Api.Extensions.ServiceCollection;
 using BaseApp.Application;
@@ -12,11 +9,7 @@ using Catut.Application.Middlewares;
 using Catut.Infrastructure.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using MassTransit;
-using MassTransit.Testing.Implementations;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
