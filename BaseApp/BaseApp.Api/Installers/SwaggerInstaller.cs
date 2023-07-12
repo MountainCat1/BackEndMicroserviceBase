@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace BaseApp.Api.Extensions.ServiceCollection;
+namespace BaseApp.Api.Installers;
 
 public static class SwaggerInstaller
 {

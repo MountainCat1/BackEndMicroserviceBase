@@ -1,6 +1,6 @@
 ﻿using MassTransit;
 
-namespace BaseApp.Api.Extensions.ServiceCollection;
+namespace BaseApp.Api.Installers;
 
 public static class MassTransitInstaller
 {

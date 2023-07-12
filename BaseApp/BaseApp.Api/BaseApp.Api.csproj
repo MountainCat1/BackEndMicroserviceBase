@@ -33,8 +33,4 @@
       <ProjectReference Include="..\BaseApp.Infrastructure\BaseApp.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Modules" />
-    </ItemGroup>
-
 </Project>

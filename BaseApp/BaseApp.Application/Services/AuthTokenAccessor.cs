@@ -1,7 +1,6 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace TicketTemplateDomain.Application.Services;
+namespace BaseApp.Application.Services;
 
 public interface IAuthTokenAccessor
 {

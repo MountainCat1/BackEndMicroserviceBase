@@ -1,5 +1,5 @@
 using BaseApp.Api.Extensions;
-using BaseApp.Api.Extensions.ServiceCollection;
+using BaseApp.Api.Installers;
 using BaseApp.Application;
 using BaseApp.Application.Services;
 using BaseApp.Infrastructure.Contexts;
@@ -10,7 +10,6 @@ using Catut.Infrastructure.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
-using TicketTemplateDomain.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
