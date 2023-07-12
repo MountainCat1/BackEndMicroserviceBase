@@ -31,7 +31,6 @@
     <ItemGroup>
       <ProjectReference Include="..\BaseApp.Application\BaseApp.Application.csproj" />
       <ProjectReference Include="..\BaseApp.Infrastructure\BaseApp.Infrastructure.csproj" />
-      <ProjectReference Include="..\Catut.Application\Catut.Application.csproj" />
     </ItemGroup>
 
     <ItemGroup>

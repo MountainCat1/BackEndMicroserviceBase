@@ -9,7 +9,6 @@
     <ItemGroup>
       <ProjectReference Include="..\BaseApp.Domain\BaseApp.Domain.csproj" />
       <ProjectReference Include="..\BaseApp.Infrastructure\BaseApp.Infrastructure.csproj" />
-      <ProjectReference Include="..\Catut.Infrastructure\Catut.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>

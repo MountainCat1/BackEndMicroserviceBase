@@ -10,6 +10,7 @@ using Catut.Infrastructure.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
+using TicketTemplateDomain.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,7 @@ services.InstallDbContext(configuration);
 services.AddAsymmetricAuthentication(jwtConfig);
 
 services.AddHttpContextAccessor();
+services.AddTransient<IAuthTokenAccessor, AuthTokenAccessor>();
 services.AddTransient<IUserAccessor, UserAccessor>();
 services.AddScoped<IDatabaseErrorMapper, DatabaseErrorMapper>();
 services.AddScoped<ErrorHandlingMiddleware>();
