@@ -1,4 +1,4 @@
-﻿using BaseApp.Application.Errors;
+﻿using Catut.Application.Errors;
 using Catut.Infrastructure.Abstractions;
 using Catut.Infrastructure.Errors.Database;
 
@@ -7,11 +7,11 @@ namespace BaseApp.Application.Services;
 
 public class DatabaseErrorMapper : IDatabaseErrorMapper
 {
-    public Task<Exception> MapAsync(DatabaseException exception)
+    public Exception Map(DatabaseException exception)
     {
         if (exception is ItemNotFoundException)
-            return Task.FromResult<Exception>(new NotFoundError(null, exception));
+            return new NotFoundError();
 
-        return Task.FromResult<Exception>(exception);
+        return exception;
     }
 }
