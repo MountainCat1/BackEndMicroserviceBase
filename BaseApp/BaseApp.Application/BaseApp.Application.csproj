@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Catut.Application" Version="1.0.9" />
+      <PackageReference Include="Catut.Application" Version="1.0.21" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
       <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.8" />
     </ItemGroup>
