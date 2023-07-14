@@ -57,7 +57,7 @@ services.AddAuthorizationHandlers();
 // ========= RUN  =========
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (app.Configuration.GetValue<bool>("MIGRATE"))
     await app.MigrateDatabaseAsync<BaseAppDbContext>();
 
 if (app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("ENABLE_SWAGGER"))
