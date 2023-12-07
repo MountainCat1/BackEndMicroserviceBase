@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
@@ -18,9 +18,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Catut.Application" Version="1.0.21" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.8" />
-      <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="7.0.8" />
+      <PackageReference Include="Azure.Identity" Version="1.10.4" />
+      <PackageReference Include="Catut.Application" Version="1.0.28" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
     </ItemGroup>
 
 </Project>
