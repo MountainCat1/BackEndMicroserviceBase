@@ -1,10 +1,10 @@
 ﻿using MassTransit;
 
-namespace BaseApp.Api.Installers;
-
-public static class MassTransitInstaller
+namespace BaseApp.Api.Installers
 {
-    public static IServiceCollection InstallMassTransit(this IServiceCollection services, ConfigurationManager configuration)
+    public static class MassTransitInstaller
+    {
+        public static IServiceCollection InstallMassTransit(this IServiceCollection services, ConfigurationManager configuration)
     {
         services.AddOptions<MassTransitHostOptions>()
             .Configure(options =>
@@ -30,5 +30,6 @@ public static class MassTransitInstaller
         });
 
         return services;
+    }
     }
 }

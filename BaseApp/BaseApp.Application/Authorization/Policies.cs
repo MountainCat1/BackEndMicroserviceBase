@@ -1,7 +1,9 @@
-﻿namespace BaseApp.Application.Authorization;
-
-public static class Policies
+﻿namespace BaseApp.Application.Authorization
 {
-    // Example:
-    public const string ReadConvention = nameof(ReadConvention);
+    public static class Policies
+    {
+        // TODO: Replace placeholder
+        // Example:
+        public const string ReadConvention = nameof(ReadConvention);
+    }
 }

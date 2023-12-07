@@ -1,3 +1,4 @@
-﻿namespace BaseApp.Application;
-
-public class ApplicationAssemblyMarker { /* Intentionally Empty */ }
+﻿namespace BaseApp.Application
+{
+    public class ApplicationAssemblyMarker { /* Intentionally Empty */ }
+}

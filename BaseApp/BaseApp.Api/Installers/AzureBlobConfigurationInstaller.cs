@@ -1,19 +1,20 @@
 ﻿using Azure.Storage.Blobs;
-using BaseApp.Api.Configuration;
+using Catut.Application.Configuration;
 
-namespace BaseApp.Api.Installers;
-
-public static class AzureBlobConfigurationInstaller
+namespace BaseApp.Api.Installers
 {
-    public static IConfigurationBuilder AddAzureBlobJsonConfiguration(this IConfigurationBuilder builder, BlobStorageConfig storageConfig, string fileName)
+    public static class AzureBlobConfigurationInstaller
     {
-        var blobServiceClient = new BlobServiceClient(storageConfig.ConnectionString);
-        var blobClient = blobServiceClient.GetBlobContainerClient(storageConfig.ContainerName).GetBlobClient(fileName);
+        public static IConfigurationBuilder AddAzureBlobJsonConfiguration(this IConfigurationBuilder builder, BlobStorageConfig storageConfig, string fileName)
+        {
+            var blobServiceClient = new BlobServiceClient(storageConfig.ConnectionString);
+            var blobClient = blobServiceClient.GetBlobContainerClient(storageConfig.ContainerName).GetBlobClient(fileName);
 
-        using var memoryStream = new MemoryStream();
-        blobClient.DownloadTo(memoryStream);
-        memoryStream.Position = 0;
+            using var memoryStream = new MemoryStream();
+            blobClient.DownloadTo(memoryStream);
+            memoryStream.Position = 0;
 
-        return builder.AddJsonStream(memoryStream);
+            return builder.AddJsonStream(memoryStream);
+        }
     }
 }

@@ -1,8 +1,8 @@
-﻿namespace BaseApp.Api.Installers;
-
-public static class CorsInstaller 
+﻿namespace BaseApp.Api.Installers
 {
-    public static IServiceCollection InstallCors(this IServiceCollection services)
+    public static class CorsInstaller 
+    {
+        public static IServiceCollection InstallCors(this IServiceCollection services)
     {
         services.AddCors(options =>
         {
@@ -20,5 +20,6 @@ public static class CorsInstaller
         });
 
         return services;
+    }
     }
 }

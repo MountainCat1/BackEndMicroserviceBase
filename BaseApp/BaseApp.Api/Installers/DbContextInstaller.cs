@@ -1,25 +1,26 @@
 ﻿using BaseApp.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace BaseApp.Api.Installers;
-
-public static class DbContextInstaller
+namespace BaseApp.Api.Installers
 {
-    private const string DatabaseConnectionStringKey = "Database";
-    
-    public static IServiceCollection InstallDbContext(this IServiceCollection services, ConfigurationManager configuration)
+    public static class DbContextInstaller
     {
-        services.AddDbContext<BaseAppDbContext>(options =>
+        private const string DatabaseConnectionStringKey = "Database";
+    
+        public static IServiceCollection InstallDbContext(this IServiceCollection services, ConfigurationManager configuration)
         {
-            options.UseSqlServer(configuration.GetConnectionString(DatabaseConnectionStringKey),
-                b =>
-                {
-                    b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName);
-                    b.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5.0), null);
-                });
-        });
+            services.AddDbContext<BaseAppDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString(DatabaseConnectionStringKey),
+                    b =>
+                    {
+                        b.MigrationsAssembly(typeof(ApiAssemblyMarker).Assembly.FullName);
+                        b.EnableRetryOnFailure(5, TimeSpan.FromSeconds(5.0), null);
+                    });
+            });
 
 
-        return services;
+            return services;
+        }
     }
 }

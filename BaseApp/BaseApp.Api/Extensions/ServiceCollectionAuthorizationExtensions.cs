@@ -1,13 +1,15 @@
-﻿namespace BaseApp.Api.Extensions;
+﻿using BaseApp.Application.Authorization.Handlers;
+using Microsoft.AspNetCore.Authorization;
 
-public static class ServiceCollectionAuthorizationExtensions
+namespace BaseApp.Api.Extensions
 {
-    public static IServiceCollection AddAuthorizationHandlers(this IServiceCollection services)
+    public static class ServiceCollectionAuthorizationExtensions
     {
-        // Here add all authoriztion handlers
-        // Example:
-        //      services.AddSingleton<IAuthorizationHandler, SomeFunnyAuthorizationHandler>();
-        
-        return services;
+        public static IServiceCollection AddResourceAuthorization(this IServiceCollection services)
+        {
+            services.AddSingleton<IAuthorizationHandler, ExampleAuthorizationHandler>();
+
+            return services;
+        }
     }
 }

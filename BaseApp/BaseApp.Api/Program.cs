@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using BaseApp.Api.Extensions;
 using BaseApp.Api.Installers;
 using BaseApp.Application;
@@ -12,19 +13,49 @@ using Catut.Application.Services;
 using Catut.Infrastructure.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using HashidsNet;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ========= CONFIGURATION  =========
+
+#region Configuration
+
 var configuration = builder.Configuration;
 
-configuration.AddJsonFile("Secrets/jwt.json");
+if (configuration.GetRequiredEnvironmentVariable<bool>("USE_BLOB_CONFIGURATION"))
+{
+    Console.WriteLine("Loading configuration from Azure Blob Storage...");
+    configuration.AddAzureBlobJsonConfiguration(new BlobStorageConfig()
+    {
+        ConnectionString = configuration.GetRequiredConnectionString("AzureBlobStorage"),
+        ContainerName = configuration.GetRequiredEnvironmentVariable<string>("AZURE_BLOB_STORAGE_CONTAINER_NAME")
+    }, "appsettings.json");
+}
 
-var jwtConfig = configuration.GetConfiguration<JwtConfig>();
-var apiConfig = configuration.GetConfiguration<ApiConfiguration>();
+if (configuration.GetRequiredEnvironmentVariable<bool>("USE_AZURE_KEY_VAULT"))
+{
+    Console.WriteLine("Loading secrets from Azure Key Vault...");
+    configuration.InstallAzureSecrets();
+}
+else
+{
+    Console.WriteLine("Loading secrets from local files...");
+    configuration.AddJsonFile("Secrets/jwt.json");
+    configuration.AddJsonFile("Secrets/hash_ids.json");
+}
+
+
+var jwtConfig = configuration.GetSecret<JwtConfig>();
+var hashIdsConfig = configuration.GetSecret<HashIdsConfig>();
+
+#endregion
 
 // ========= SERVICES  =========
+
+#region Services
+
 var services = builder.Services;
 
 services.AddControllers();
@@ -36,6 +67,21 @@ services.AddLogging(loggingBuilder =>
     loggingBuilder.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
 });
 
+
+services.Configure<ApiConfiguration>(configuration.GetSection(nameof(ApiConfiguration)));
+
+services.AddControllers().AddJsonOptions(opts =>
+{
+    var enumConverter = new JsonStringEnumConverter();
+    opts.JsonSerializerOptions.Converters.Add(enumConverter);
+});
+services.AddEndpointsApiExplorer();
+services.AddLogging(loggingBuilder =>
+{
+    loggingBuilder.AddConsole();
+    loggingBuilder.AddDebug();
+});
+
 //  === INSTALLERS ===
 services.InstallSwagger();
 services.InstallMassTransit(configuration);
@@ -45,6 +91,7 @@ services.DefineAuthorizationPolicies();
 //  ===            ===
 
 services.AddAsymmetricAuthentication(jwtConfig);
+services.AddSingleton<IHashids, Hashids>(x => new Hashids(hashIdsConfig.Salt, hashIdsConfig.MinHashLenght));
 
 services.AddHttpContextAccessor();
 services.AddSingleton<IDatabaseErrorMapper, DatabaseErrorMapper>();
@@ -59,7 +106,13 @@ services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyMarker>();
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(ApplicationAssemblyMarker).Assembly));
-services.AddAuthorizationHandlers();
+
+// TODO: Replace placeholder
+services.AddScoped<ISomeEntityUnitOfWork, SomeEntityUnitOfWork>();
+services.AddScoped<ICommandMediator, SomeEntityCommandMediator>();
+services.AddScoped<IQueryMediator, QueryMediator>();
+
+#endregion
 
 // ========= RUN  =========
 var app = builder.Build();

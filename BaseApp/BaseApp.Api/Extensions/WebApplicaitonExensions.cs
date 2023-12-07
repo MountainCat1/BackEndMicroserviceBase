@@ -1,21 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace BaseApp.Api.Extensions;
-
-public static class WebApplicaitonExensions 
+namespace BaseApp.Api.Extensions
 {
-    public static async Task MigrateDatabaseAsync<TDbContext>(this WebApplication app)
-        where TDbContext : DbContext
+    public static class WebApplicaitonExensions 
     {
-        var services = app.Services;
-
-        using (var scope = services.CreateAsyncScope())
+        public static async Task MigrateDatabaseAsync<TDbContext>(this WebApplication app)
+            where TDbContext : DbContext
         {
-            var serviceProvider = scope.ServiceProvider;
+            var services = app.Services;
 
-            var dbContext = serviceProvider.GetRequiredService<TDbContext>();
+            using (var scope = services.CreateAsyncScope())
+            {
+                var serviceProvider = scope.ServiceProvider;
 
-            await dbContext.Database.MigrateAsync();
+                var dbContext = serviceProvider.GetRequiredService<TDbContext>();
+
+                await dbContext.Database.MigrateAsync();
+            }
         }
     }
 }

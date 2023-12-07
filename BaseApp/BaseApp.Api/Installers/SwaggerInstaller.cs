@@ -1,11 +1,11 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace BaseApp.Api.Installers;
-
-public static class SwaggerInstaller
+namespace BaseApp.Api.Installers
 {
-    public static IServiceCollection InstallSwagger(this IServiceCollection services)
+    public static class SwaggerInstaller
+    {
+        public static IServiceCollection InstallSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(o =>
         {
@@ -15,7 +15,7 @@ public static class SwaggerInstaller
         return services;
     }
     
-    public static SwaggerGenOptions AddSwaggerAuthUi(this SwaggerGenOptions options)
+        public static SwaggerGenOptions AddSwaggerAuthUi(this SwaggerGenOptions options)
     {
         // Add the security definition for JWT Bearer authentication
         var securityScheme = new OpenApiSecurityScheme
@@ -44,5 +44,6 @@ public static class SwaggerInstaller
         });
 
         return options;
+    }
     }
 }
