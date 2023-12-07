@@ -43,10 +43,13 @@ services.InstallDbContext(configuration);
 services.AddAsymmetricAuthentication(jwtConfig);
 
 services.AddHttpContextAccessor();
-services.AddTransient<IAuthTokenAccessor, AuthTokenAccessor>();
+services.AddSingleton<IDatabaseErrorMapper, DatabaseErrorMapper>();
+services.AddSingleton<IApplicationErrorMapper, ApplicationErrorMapper>();
+services.AddSingleton<IApiExceptionMapper, ApiExceptionMapper>();
+services.AddSingleton<IDomainErrorMapper, DomainErrorMapper>();
 services.AddTransient<IUserAccessor, UserAccessor>();
-services.AddScoped<IDatabaseErrorMapper, DatabaseErrorMapper>();
-services.AddScoped<ErrorHandlingMiddleware>();
+services.AddTransient<IAuthTokenAccessor, AuthTokenAccessor>();
+services.AddSingleton<ErrorHandlingMiddleware>();
 services.AddFluentValidationAutoValidation();
 services.AddValidatorsFromAssemblyContaining<ApplicationAssemblyMarker>();
 services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
