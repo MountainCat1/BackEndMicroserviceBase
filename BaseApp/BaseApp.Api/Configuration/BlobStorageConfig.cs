@@ -1,4 +1,4 @@
-﻿namespace Conventions.Api.Configuration;
+﻿namespace BaseApp.Api.Configuration;
 
 public class BlobStorageConfig
 {

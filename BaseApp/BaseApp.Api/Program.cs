@@ -1,11 +1,14 @@
 using BaseApp.Api.Extensions;
 using BaseApp.Api.Installers;
 using BaseApp.Application;
+using BaseApp.Application.Authorization.Extensions;
 using BaseApp.Application.Services;
 using BaseApp.Infrastructure.Contexts;
+using Catut.Application.Abstractions;
 using Catut.Application.Configuration;
 using Catut.Application.MediaRBehaviors;
 using Catut.Application.Middlewares;
+using Catut.Application.Services;
 using Catut.Infrastructure.Abstractions;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -38,6 +41,7 @@ services.InstallSwagger();
 services.InstallMassTransit(configuration);
 services.InstallCors();
 services.InstallDbContext(configuration);
+services.DefineAuthorizationPolicies();
 //  ===            ===
 
 services.AddAsymmetricAuthentication(jwtConfig);

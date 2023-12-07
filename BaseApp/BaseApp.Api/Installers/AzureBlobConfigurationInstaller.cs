@@ -1,5 +1,5 @@
 ﻿using Azure.Storage.Blobs;
-using Conventions.Api.Configuration;
+using BaseApp.Api.Configuration;
 
 namespace BaseApp.Api.Installers;
 
