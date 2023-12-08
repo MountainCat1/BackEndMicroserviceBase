@@ -1,4 +1,5 @@
 ﻿using Catut.Application.Abstractions;
+using Catut.Application.Services;
 using MediatR;
 
 namespace BaseApp.Application.Services;

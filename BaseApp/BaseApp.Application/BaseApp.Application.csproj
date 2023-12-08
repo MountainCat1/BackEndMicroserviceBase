@@ -18,7 +18,7 @@
 
     <ItemGroup>
       <PackageReference Include="Azure.Identity" Version="1.10.4" />
-      <PackageReference Include="Catut.Application" Version="1.0.31" />
+      <PackageReference Include="Catut.Application" Version="1.0.33" />
       <PackageReference Include="Hashids.net" Version="1.7.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="8.0.0" />
